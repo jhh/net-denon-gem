@@ -10,6 +10,7 @@ require 'net/denon'
 task :default => 'spec:run'
 
 PROJ.name = 'net-denon-gem'
+PROJ.summary = 'Provides DENON AVR control protocol client functionality.'
 PROJ.authors = 'Jeff Hutchison'
 PROJ.email = 'hutchison.jeff@gmail.com'
 PROJ.url = 'http://github.com/jhh/net-denon-gem/tree/master'
