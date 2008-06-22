@@ -3,7 +3,7 @@ Manifest.txt
 README.txt
 Rakefile
 bin/net-denon-gem
-lib/net-denon-gem.rb
+lib/net/denon.rb
 spec/net-denon-gem_spec.rb
 spec/spec_helper.rb
 tasks/ann.rake

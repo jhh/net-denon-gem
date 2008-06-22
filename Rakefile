@@ -5,7 +5,7 @@
 load 'tasks/setup.rb'
 
 ensure_in_path 'lib'
-require 'net-denon-gem'
+require 'net/denon'
 
 task :default => 'spec:run'
 

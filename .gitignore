@@ -1,0 +1,4 @@
+doc/**/*
+doc/*.html
+doc/*.css
+doc/*.rid

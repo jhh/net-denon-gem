@@ -2,12 +2,12 @@
 
 # Equivalent to a header guard in C/C++
 # Used to prevent the class/module from being loaded more than once
-unless defined? NetDenonGem
+unless defined? Net::Denon
 
-module NetDenonGem
+module Net::Denon
 
   # :stopdoc:
-  VERSION = '1.0.0'
+  VERSION = '0.0.1'
   LIBPATH = ::File.expand_path(::File.dirname(__FILE__)) + ::File::SEPARATOR
   PATH = ::File.dirname(LIBPATH) + ::File::SEPARATOR
   # :startdoc:
@@ -49,7 +49,7 @@ module NetDenonGem
 
 end  # module NetDenonGem
 
-NetDenonGem.require_all_libs_relative_to __FILE__
+Net::Denon.require_all_libs_relative_to __FILE__
 
 end  # unless defined?
 
