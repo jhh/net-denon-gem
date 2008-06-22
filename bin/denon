@@ -1,12 +1,27 @@
 #!/usr/bin/env ruby -I lib
 require 'readline'
+require 'optparse'
+require 'ostruct'
+
 include Readline
 
+# FIXME: includes are all screwed up
 require File.expand_path(
     File.join(File.dirname(__FILE__), '..', 'lib', 'net', 'denon'))
     
+options = OpenStruct.new
+options.host = ENV['NET_DENON_HOST']
+OptionParser.new do |opts|
+  opts.banner = "Usage: denon [options]"
+  opts.on("-d", "--[no-]debug", "Log to denon.txt") { |d| options.debug = d }
+  opts.on("--host HOST", "Connect to HOST") do |h|
+    options.host = h
+  end
+end.parse!
+  p options
+  p ARGV
 
-denon = Net::Denon::start(:host => ARGV[0], :log => "debug.txt")
+denon = Net::Denon::start(:host => options.host, :wait_time => 0.5)
 
 loop do
   cmd = readline("denon> ", true)
@@ -22,6 +37,9 @@ loop do
     denon.mute
   when 'unmute'
     denon.unmute
+  when 'query'
+    denon.query
+    puts denon.status
   when 'status'
     puts denon.status
   when /vol(ume)*\s+\d+/

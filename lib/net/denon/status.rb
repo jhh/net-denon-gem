@@ -61,7 +61,7 @@ module Net ; module Denon
     end
 
     def update_channel_volume(r)
-      re = /^([A-Z]+) (\d\d)$/
+      re = /^([A-Z]+) (\d\d)(\d?)$/
       md = re.match(parameter(r))
       vol = md[2].to_i
       case (md[1])

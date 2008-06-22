@@ -112,6 +112,15 @@ module Net ; module Denon
       @sock.closed?
     end
     
+    def query
+      send_command "PW?"
+      send_command "MU?"
+      send_command "MV?"
+      send_command "SI?"
+      send_command "ZM?"
+      # send_command "CV?"
+    end
+    
     def status
       check_status
       @status
@@ -173,6 +182,8 @@ module Net ; module Denon
         buffer = @sock.readpartial(1024)
         line += buffer
       end
+      message = line.gsub("\r", "\n")
+      log("received: #{message}")
       @status.update(line)
     end
   
