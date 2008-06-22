@@ -17,6 +17,6 @@ PROJ.rubyforge.name = 'net-denon-gem'
 
 PROJ.spec.opts << '--color'
 
-PROJ.rcov.opts << '-Ilib -x rcov.rb'
+PROJ.rcov.opts << '-Ilib:test -x rcov.rb'
 
 # EOF

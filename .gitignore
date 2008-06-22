@@ -2,3 +2,4 @@ doc
 coverage
 debug.txt
 test/debug.txt
+.DS_Store
