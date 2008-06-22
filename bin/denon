@@ -18,6 +18,10 @@ loop do
     denon.on
   when 'off'
     denon.standby
+  when 'mute'
+    denon.mute
+  when 'unmute'
+    denon.unmute
   when 'status'
     puts denon.status
   when /vol(ume)*\s+\d+/

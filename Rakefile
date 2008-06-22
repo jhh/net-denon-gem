@@ -10,7 +10,7 @@ require 'find'
 
 task :default => 'test:run'
 
-PROJ.name = 'net-denon-gem'
+PROJ.name = 'net-denon'
 PROJ.summary = 'Provides DENON AVR control protocol client functionality.'
 PROJ.authors = 'Jeff Hutchison'
 PROJ.email = 'hutchison.jeff@gmail.com'

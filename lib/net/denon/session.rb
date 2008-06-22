@@ -126,7 +126,19 @@ module Net ; module Denon
     def standby
       send_command "PW?"
       check_status
-      send_command "PWSTANDBY" unless @status.standby
+      send_command "PWSTANDBY" unless @status.standby?
+    end
+    
+    def mute
+      send_command "MU?"
+      check_status
+      send_command "MUON" unless @status.mute?
+    end
+    
+    def unmute
+      send_command "MU?"
+      check_status
+      send_command "MUOFF" if @status.mute?
     end
     
     def master_volume=(volume)
