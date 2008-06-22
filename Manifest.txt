@@ -1,6 +1,7 @@
 History.txt
 Manifest.txt
 README.txt
+Rakefile
 bin/denon
 lib/net/denon.rb
 lib/net/denon/session.rb

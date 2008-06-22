@@ -112,12 +112,28 @@ module Net ; module Denon
       @sock.closed?
     end
     
+    def status
+      check_status
+      @status
+    end
+    
     def on
+      send_command "PW?"
       check_status
-      if (@status.standby?)
-        send_command("PWON")
+      send_command "PWON" unless @status.on?
+    end
+    
+    def standby
+      send_command "PW?"
+      check_status
+      send_command "PWSTANDBY" unless @status.standby
+    end
+    
+    def master_volume=(volume)
+      v = volume.to_i
+      if (v > 0 && v < 99) then
+        send_command("MV#{v}")
       end
-      check_status
     end
     
     protected
@@ -133,13 +149,15 @@ module Net ; module Denon
         IO::select(nil, [@sock])
         length -= @sock.syswrite(string[-length..-1])
       end
+      sleep 0.1
+      check_status
     end
     
     def check_status
       buffer = ''
       line = "\r"
 
-      until(line[-1] == 13 and not IO::select([@sock], nil, nil, WAIT_TIME))
+      until(line[-1] == 13 and not IO::select([@sock], nil, nil, @options[:wait_time]))
         buffer = @sock.readpartial(1024)
         line += buffer
       end

@@ -1,8 +1,33 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env ruby -I lib
+require 'readline'
+include Readline
 
 require File.expand_path(
     File.join(File.dirname(__FILE__), '..', 'lib', 'net', 'denon'))
+    
 
-# Put your code here
+denon = Net::Denon::start(:host => ARGV[0], :log => "debug.txt")
+
+loop do
+  cmd = readline("denon> ", true)
+  break if cmd.nil?
+  case cmd.strip
+  when 'exit'
+    break
+  when 'on'
+    denon.on
+  when 'off'
+    denon.standby
+  when 'status'
+    puts denon.status
+  when /vol(ume)*\s+\d+/
+    vol = cmd.match(/vol[ume]*\s+(\d+)/)[1]
+    denon.master_volume = vol
+  else
+    puts "Invalid command #{cmd}"
+  end
+end
+
+denon.close
 
 # EOF

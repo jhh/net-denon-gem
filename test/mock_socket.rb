@@ -1,8 +1,11 @@
 class MockSocket
   
-  def initialize(expected = '')
-    @expected = expected
-    @closed = false
+  include Test::Unit::Assertions
+  
+  attr_writer(:command, :response)
+  
+  def initialize
+    
   end
   
   def close

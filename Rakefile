@@ -6,8 +6,9 @@ load 'tasks/setup.rb'
 
 ensure_in_path 'lib'
 require 'net/denon'
+require 'find'
 
-task :default => 'spec:run'
+task :default => 'test:run'
 
 PROJ.name = 'net-denon-gem'
 PROJ.summary = 'Provides DENON AVR control protocol client functionality.'
@@ -19,5 +20,9 @@ PROJ.rubyforge.name = 'net-denon-gem'
 PROJ.spec.opts << '--color'
 
 PROJ.rcov.opts << '-Ilib:test -x rcov.rb'
+
+PROJ.exclude << %w(\.DS_Store* .gitignore debug.txt ^spec ^test ^tasks)
+
+PROJ.gem.files = manifest_files
 
 # EOF
