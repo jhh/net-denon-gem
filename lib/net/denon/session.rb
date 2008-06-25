@@ -1,6 +1,7 @@
 require 'socket'
 require 'timeout'
 require 'net/denon/status'
+require 'net/denon/transport'
 
 module Net ; module Denon
 
@@ -30,6 +31,12 @@ module Net ; module Denon
   # http://usa.denon.com/AVR-4308CISerialProtocol_Ver5.1.0a.pdf
   #
   class Session
+    
+    # The underlying transport.
+    attr_reader :transport
+    
+    # The current state of the receiver
+    attr_reader :state
   
     # Creates a new Net::Denon object and connects it to the telnet port (23) of
     # the Denon receiver on the named host.
@@ -65,53 +72,16 @@ module Net ; module Denon
     # proxy:: a proxy object to be used instead of opening a direct connection
     #         to the host.
     #
-    def initialize(options)
-      @options = options
-      @options[:port]      = 23  unless @options.has_key?(:port)
-      @options[:wait_time] = 0.2 unless @options.has_key?(:wait_time)
-      @options[:timeout]   = 1   unless @options.has_key?(:timeout)
-      
-      if @options.has_key?(:log)
-        @log = File.open(@options[:log], "a+")
-        @log.sync = true
-      end
-      
-      if @options.has_key?(:proxy)
-        @sock = @options[:proxy]
-      else
-        message = "Trying #{@options[:host]}...\n"
-        yield(message) if block_given?
-        log(message)
-        
-        begin
-          Timeout::timeout(@options[:timeout]) do
-            @sock = TCPSocket.open(@options[:host], @options[:port])
-          end
-        rescue Timeout::Error
-          log("Timed out while opening a connection to #{@options[:host]}.\n")
-          raise Timeout::Error, message
-        rescue Exception => e
-          log(e.to_s + "\n")
-          raise
-        end
-        @sock.sync = true
-        message = "Connected to #{@options[:host]}.\n"
-        log(message)
-        yield(message) if block_given?
-      end
-      @status = Net::Denon::Status::new
+    def initialize(host, options)
+      @transport = Net::Denon::Transport.new(host, options)
+      @state = Net::Denon::Status::new
     end
   
     # Disconnects from the server.
     def close
-      @sock.close
+      transport.close
     end
   
-    # Returns true if connection to receiver is completely closed.
-    def closed?
-      @sock.closed?
-    end
-    
     def query
       send_command "PW?"
       send_command "MU?"
@@ -121,33 +91,28 @@ module Net ; module Denon
       # send_command "CV?"
     end
     
-    def status
-      check_status
-      @status
-    end
-    
     def on
       send_command "PW?"
       check_status
-      send_command "PWON" unless @status.on?
+      send_command "PWON" unless state.on?
     end
     
     def standby
       send_command "PW?"
       check_status
-      send_command "PWSTANDBY" unless @status.standby?
+      send_command "PWSTANDBY" unless state.standby?
     end
     
     def mute
       send_command "MU?"
       check_status
-      send_command "MUON" unless @status.mute?
+      send_command "MUON" unless state.mute?
     end
     
     def unmute
       send_command "MU?"
       check_status
-      send_command "MUOFF" if @status.mute?
+      send_command "MUOFF" if state.mute?
     end
     
     def master_volume=(volume)
@@ -163,28 +128,20 @@ module Net ; module Denon
       @log.write(message) if @options.has_key?(:log)
     end
     
+    # FIXME: move send_command into Transport class
     def send_command(string)
       string += "\r"
       length = string.length
       while 0 < length
-        IO::select(nil, [@sock])
-        length -= @sock.syswrite(string[-length..-1])
+        IO::select(nil, [transport.socket])
+        length -= transport.socket.syswrite(string[-length..-1])
       end
       sleep 0.1
       check_status
     end
     
     def check_status
-      buffer = ''
-      line = "\r"
-
-      until(line[-1] == 13 and not IO::select([@sock], nil, nil, @options[:wait_time]))
-        buffer = @sock.readpartial(1024)
-        line += buffer
-      end
-      message = line.gsub("\r", "\n")
-      log("received: #{message}")
-      @status.update(line)
+      state.update(transport.poll_events)
     end
   
   end

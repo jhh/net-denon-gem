@@ -21,7 +21,7 @@ end.parse!
   p options
   p ARGV
 
-denon = Net::Denon::start(:host => options.host, :wait_time => 0.5)
+denon = Net::Denon::start(options.host, :wait_time => 0.5)
 
 loop do
   cmd = readline("denon> ", true)
@@ -39,9 +39,9 @@ loop do
     denon.unmute
   when 'query'
     denon.query
-    puts denon.status
+    puts denon.state
   when 'status'
-    puts denon.status
+    puts denon.state
   when /vol(ume)*\s+\d+/
     vol = cmd.match(/vol[ume]*\s+(\d+)/)[1]
     denon.master_volume = vol

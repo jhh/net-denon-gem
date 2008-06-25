@@ -1,5 +1,6 @@
 require 'socket'
 require 'timeout'
+require 'net/denon/loggable'
 
 module Net; module Denon
   
@@ -46,13 +47,17 @@ module Net; module Denon
       socket.close
     end
     
-    # Tries to read the next event from the socket.  If mode is :nonblock (the
-    # default), this will not block and will return nil if there are no events
-    # waiting to be read.
-    def poll_event(mode=:nonblock)
+    # Tries to read the next event(s) from the socket.
+    def poll_events
+      buffer = ''
+      line = "\r"
+
+      until(line[-1] == 13 and not IO::select([socket], nil, nil, @options[:wait_time] || 0.1))
+        buffer = socket.readpartial(512)
+        line += buffer
+      end
+      line
     end
       
-    end
   end
-  
-end
+end ; end
