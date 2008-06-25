@@ -1,10 +1,13 @@
-net-denon-gem
+= net-denon-gem
     by Jeff Hutchison
     http://github.com/jhh/net-denon-gem/tree/master
 
 == DESCRIPTION:
 A Ruby library for controlling Denon AV receivers via their embedded
 telnet protocol.
+
+Acknowledgements: Unit tests have been made possible by abstractions and
+concepts borrowed from Net::SSH.
 
 == FEATURES/PROBLEMS:
 
@@ -21,7 +24,7 @@ telnet protocol.
 
 == INSTALL:
 
-* FIXME (sudo gem install, anything else)
+* sudo gem install net-denon
 
 == LICENSE:
 
