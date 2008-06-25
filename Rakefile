@@ -5,6 +5,8 @@
 load 'tasks/setup.rb'
 
 ensure_in_path 'lib'
+ensure_in_path 'test'
+
 require 'net/denon'
 require 'find'
 

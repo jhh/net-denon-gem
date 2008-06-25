@@ -1,8 +1,5 @@
-require "test/unit"
-
-require File.expand_path(
-    File.join(File.dirname(__FILE__), %w[.. lib net denon]))
-
+require 'common'
+require 'net/denon/status'
 
 class TestDenonStatus < Test::Unit::TestCase
   
