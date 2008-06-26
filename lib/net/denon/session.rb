@@ -93,25 +93,21 @@ module Net ; module Denon
     
     def on
       send_command "PW?"
-      check_status
       send_command "PWON" unless state.on?
     end
     
     def standby
       send_command "PW?"
-      check_status
       send_command "PWSTANDBY" unless state.standby?
     end
     
     def mute
       send_command "MU?"
-      check_status
       send_command "MUON" unless state.mute?
     end
     
     def unmute
       send_command "MU?"
-      check_status
       send_command "MUOFF" if state.mute?
     end
     
@@ -122,22 +118,15 @@ module Net ; module Denon
       end
     end
     
+    def send_command(command)
+      transport.send command
+      check_status
+    end
+
     protected
     
     def log(message)
       @log.write(message) if @options.has_key?(:log)
-    end
-    
-    # FIXME: move send_command into Transport class
-    def send_command(string)
-      string += "\r"
-      length = string.length
-      while 0 < length
-        IO::select(nil, [transport.socket])
-        length -= transport.socket.syswrite(string[-length..-1])
-      end
-      sleep 0.1
-      check_status
     end
     
     def check_status

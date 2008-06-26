@@ -46,6 +46,16 @@ module Net; module Denon
     def close
       socket.close
     end
+
+    # Sends a command string to the receiver.
+    def send(string)
+      string += "\r"
+      length = string.length
+      while 0 < length
+        IO::select(nil, [socket])
+        length -= socket.syswrite(string[-length..-1])
+      end
+    end
     
     # Tries to read the next event(s) from the socket.
     def poll_events
@@ -53,7 +63,7 @@ module Net; module Denon
       line = "\r"
 
       until(line[-1] == 13 and not IO::select([socket], nil, nil, @options[:wait_time] || 0.1))
-        buffer = socket.readpartial(512)
+        buffer = socket.readpartial(1024)
         line += buffer
       end
       line
