@@ -3,6 +3,7 @@ require 'timeout'
 require 'net/denon/state'
 require 'net/denon/transport'
 require 'net/denon/constants'
+require 'net/denon/loggable'
 
 module Net ; module Denon
 
@@ -33,6 +34,7 @@ module Net ; module Denon
   #
   class Session
     include Constants
+    include Loggable
     
     # The underlying transport.
     attr_reader :transport
@@ -75,8 +77,9 @@ module Net ; module Denon
     #         to the host.
     #
     def initialize(host, options)
+      self.logger = options[:logger]
       @transport = Net::Denon::Transport.new(host, options)
-      @state = Net::Denon::Status::new
+      @state = Net::Denon::State.new
     end
   
     # Disconnects from the server.
@@ -119,17 +122,15 @@ module Net ; module Denon
     end
     
     def send_command(command)
+      debug { "send_command called: #{command}" }
       transport.send command
       check_status
     end
 
     protected
     
-    def log(message)
-      @log.write(message) if @options.has_key?(:log)
-    end
-    
     def check_status
+      debug { "check_status called" }
       state.update(transport.poll_events)
     end
   

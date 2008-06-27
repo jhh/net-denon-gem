@@ -1,9 +1,11 @@
 require 'net/denon/constants'
+require 'net/denon/loggable'
 
 module Net ; module Denon
 
   class State
     include Constants
+    include Loggable
 
     attr_reader :master_volume
     
@@ -22,6 +24,7 @@ module Net ; module Denon
     end
 
     def standby?
+      debug {"@standby = #{@standby}"}
       @standby
     end
 
@@ -38,6 +41,7 @@ module Net ; module Denon
     end
 
     def update(response)
+      debug {"response = #{response}"}
       response.each("\r") do |r|
         case command(r)
         when POWER

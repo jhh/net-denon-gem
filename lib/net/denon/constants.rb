@@ -2,6 +2,8 @@ module Net; module Denon
 
   # Definitions of constants.
   module Constants
+    
+    CR                   = "\r"
 
     POWER                = 'PW'
     POWER_ON             = 'PWON'
@@ -13,6 +15,7 @@ module Net; module Denon
     MASTER_VOLUME_DOWN   = 'MVDOWN'
     MASTER_VOLUME_SET    = 'MV'
     MASTER_VOLUME_STATUS = 'MV?'
+    MASTER_VOLUME_MAX    = 'MVMAX'
     
     CHANNEL_VOLUME       = 'CV'
 
