@@ -1,7 +1,9 @@
 require 'common'
 require 'net/denon/state'
+require 'net/denon/constants'
 
 class TestState < Test::Unit::TestCase
+  include Net::Denon::Constants
   
   def setup
     @ds = Net::Denon::State.new
@@ -13,44 +15,45 @@ class TestState < Test::Unit::TestCase
   end
   
   def test_should_update_power
-    @ds.update("PWSTANDBY\r")
+    @ds.update(POWER_STANDBY + CR)
     assert(@ds.standby?)
     assert(!@ds.on?)
     
-    @ds.update("PWSTANDBY\rPWON\r")
+    @ds.update(POWER_STANDBY + CR + POWER_ON + CR)
     assert(@ds.on?)
     assert(!@ds.standby?)
     
-    @ds.update("PWON\rPWSTANDBY\r")
+    @ds.update(POWER_ON + CR + POWER_STANDBY + CR)
     assert(!@ds.on?)
     
   end
   
   def test_should_update_master_volume
-    @ds.update("MV00\r")
+    @ds.update(MASTER_VOLUME_SET + '00' + CR)
     assert_equal(0, @ds.master_volume)
-    @ds.update("MV10\r")
+    @ds.update(MASTER_VOLUME_SET + '10' + CR)
     assert_equal(10, @ds.master_volume)
-    @ds.update("MV00\rMVMAX 98\r")
+    @ds.update(MASTER_VOLUME_SET + '00' + CR + MASTER_VOLUME_MAX + '98' + CR)
     assert_equal(98, @ds.master_volume_max)
     assert_equal(00, @ds.master_volume)
-    @ds.update("MV95\rMVMAX 96\rMV97\rMVMAX 99\r")
+    @ds.update(MASTER_VOLUME_SET + '95' + CR + MASTER_VOLUME_MAX + '96' + CR +
+      MASTER_VOLUME_SET + '97' + CR + MASTER_VOLUME_MAX + '99' + CR)
     assert_equal(97, @ds.master_volume)
     assert_equal(99, @ds.master_volume_max)
   end
   
   def test_should_update_mute
-    @ds.update("MUON\r")
+    @ds.update(MUTE_ON + CR)
     assert(@ds.mute?)
   end
   
   def test_should_update_multiple
-    @ds.update("MUOFF\rMV73\r")
+    @ds.update(MUTE_OFF + CR + MASTER_VOLUME_SET + '73' + CR)
     assert_equal(73, @ds.master_volume)
-    assert(@ds.mute? == false)
-    @ds.update("MV21\rMUON\r")
+    assert(!@ds.mute?)
+    @ds.update(MASTER_VOLUME_SET + '21' + CR + MUTE_ON + CR)
     assert_equal(21, @ds.master_volume)
-    assert(@ds.mute? == true)
+    assert(@ds.mute?)
   end
   
   def test_should_update_channel_volume
@@ -80,9 +83,9 @@ class TestState < Test::Unit::TestCase
   end
 
   def test_should_update_input_source
-    @ds.update("SIPHONO\r")
+    @ds.update(INPUT_SOURCE_PHONO + CR)
     assert_equal("PHONO", @ds.input_source)
-    @ds.update("SINET/USB\r")
+    @ds.update(INPUT_SOURCE_NET_USB + CR)
     assert_equal("NET/USB", @ds.input_source)
   end
   
