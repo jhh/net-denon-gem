@@ -1,11 +1,24 @@
-module Net ; module Denon
-  class Status
+require 'net/denon/constants'
 
-    attr_reader :standby, :mute, :master_volume, :master_max_volume, :channel_volume,
-                :input_source, :main_zone, :record_source
+module Net ; module Denon
+
+  class Status
+    include Constants
+
+    attr_reader :master_volume
+    
+    attr_reader :master_volume_max
+    
+    attr_reader :input_source
+    
+    attr_reader :channel_volume
+    
+    attr_reader :record_source
   
     def initialize
       @channel_volume = Hash.new
+      @standby        = nil
+      @mute           = nil
     end
 
     def standby?
@@ -27,19 +40,19 @@ module Net ; module Denon
     def update(response)
       response.each("\r") do |r|
         case command(r)
-        when "PW"
+        when POWER
           update_power(r)
-        when "MV"
+        when MASTER_VOLUME
           update_master_volume(r)
-        when "CV"
+        when CHANNEL_VOLUME
           update_channel_volume(r)
-        when "MU"
+        when MUTE
           update_mute(r)
-        when "SI"
+        when INPUT_SOURCE
           update_input_source(r)
-        when "ZM"
+        when MAIN_ZONE
           update_main_zone(r)
-        when "SR"
+        when RECORD_SOURCE
           update_record_source(r)
         end
       end
@@ -56,7 +69,7 @@ module Net ; module Denon
       if p.length == 2 then
         @master_volume = p.to_i
       else
-        @master_max_volume = p[-2..-1].to_i
+        @master_volume_max = p[-2..-1].to_i
       end
     end
 

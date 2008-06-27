@@ -2,6 +2,7 @@ require 'socket'
 require 'timeout'
 require 'net/denon/status'
 require 'net/denon/transport'
+require 'net/denon/constants'
 
 module Net ; module Denon
 
@@ -31,6 +32,7 @@ module Net ; module Denon
   # http://usa.denon.com/AVR-4308CISerialProtocol_Ver5.1.0a.pdf
   #
   class Session
+    include Constants
     
     # The underlying transport.
     attr_reader :transport
@@ -83,38 +85,36 @@ module Net ; module Denon
     end
   
     def query
-      send_command "PW?"
-      send_command "MU?"
-      send_command "MV?"
-      send_command "SI?"
-      send_command "ZM?"
-      # send_command "CV?"
+      send_command POWER_STATUS
+      send_command MUTE_STATUS
+      send_command MASTER_VOLUME_STATUS
+      send_command INPUT_SOURCE_STATUS
     end
     
     def on
-      send_command "PW?"
-      send_command "PWON" unless state.on?
+      send_command POWER_STATUS
+      send_command POWER_ON unless state.on?
     end
     
     def standby
-      send_command "PW?"
-      send_command "PWSTANDBY" unless state.standby?
+      send_command POWER_STATUS
+      send_command POWER_STANDBY unless state.standby?
     end
     
     def mute
-      send_command "MU?"
-      send_command "MUON" unless state.mute?
+      send_command MUTE_STATUS
+      send_command MUTE_ON unless state.mute?
     end
     
     def unmute
-      send_command "MU?"
-      send_command "MUOFF" if state.mute?
+      send_command MUTE_STATUS
+      send_command MUTE_OFF if state.mute?
     end
     
     def master_volume=(volume)
       v = volume.to_i
       if (v > 0 && v < 99) then
-        send_command("MV#{v}")
+        send_command(MASTER_VOLUME_SET + v)
       end
     end
     

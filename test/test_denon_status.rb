@@ -32,11 +32,11 @@ class TestDenonStatus < Test::Unit::TestCase
     @ds.update("MV10\r")
     assert_equal(10, @ds.master_volume)
     @ds.update("MV00\rMVMAX 98\r")
-    assert_equal(98, @ds.master_max_volume)
+    assert_equal(98, @ds.master_volume_max)
     assert_equal(00, @ds.master_volume)
     @ds.update("MV95\rMVMAX 96\rMV97\rMVMAX 99\r")
     assert_equal(97, @ds.master_volume)
-    assert_equal(99, @ds.master_max_volume)
+    assert_equal(99, @ds.master_volume_max)
   end
   
   def test_should_update_mute
