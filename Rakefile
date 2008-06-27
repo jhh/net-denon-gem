@@ -21,7 +21,7 @@ PROJ.rubyforge.name = 'net-denon-gem'
 
 PROJ.spec.opts << '--color'
 
-PROJ.rcov.opts << '-Ilib:test -x rcov.rb'
+PROJ.rcov.opts << '-Ilib:test -x rcov,mocha,test_,common.rb'
 
 PROJ.exclude << %w(\.DS_Store* .gitignore debug.txt ^spec ^test ^tasks)
 
