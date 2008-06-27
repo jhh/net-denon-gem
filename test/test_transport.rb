@@ -1,7 +1,7 @@
 require 'common'
 require 'net/denon/transport'
 
-class TestLibraryFileName < Test::Unit::TestCase
+class TestTransport < Test::Unit::TestCase
 
   def test_constructor_defaults
     assert_equal("net.denon.test", transport.host)
