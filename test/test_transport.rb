@@ -22,7 +22,7 @@ class TestTransport < Test::Unit::TestCase
     
   
   def transport(options={})
-    @session ||= begin
+    @transport ||= begin
       host = options.delete(:host) || "net.denon.test"
       TCPSocket.stubs(:open).with(host, options[:port] || 23).returns(socket)
       Net::Denon::Transport.new(host, options)
