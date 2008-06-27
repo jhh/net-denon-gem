@@ -30,15 +30,15 @@ loop do
   when 'exit'
     break
   when 'on'
-    denon.on
+    denon.on!
   when 'off'
-    denon.standby
+    denon.standby!
   when 'mute'
-    denon.mute
+    denon.mute!
   when 'unmute'
-    denon.unmute
+    denon.unmute!
   when 'query'
-    denon.query
+    denon.query!
     puts denon.state
   when 'status'
     puts denon.state
