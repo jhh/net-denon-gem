@@ -2,7 +2,7 @@ require 'net/denon/constants'
 
 module Net ; module Denon
 
-  class Status
+  class State
     include Constants
 
     attr_reader :master_volume

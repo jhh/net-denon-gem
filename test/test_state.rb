@@ -1,10 +1,10 @@
 require 'common'
-require 'net/denon/status'
+require 'net/denon/state'
 
-class TestDenonStatus < Test::Unit::TestCase
+class TestState < Test::Unit::TestCase
   
   def setup
-    @ds = Net::Denon::Status.new
+    @ds = Net::Denon::State.new
   end
 
   def test_initialize

@@ -1,6 +1,6 @@
 require 'socket'
 require 'timeout'
-require 'net/denon/status'
+require 'net/denon/state'
 require 'net/denon/transport'
 require 'net/denon/constants'
 
@@ -84,29 +84,29 @@ module Net ; module Denon
       transport.close
     end
   
-    def query
+    def query!
       send_command POWER_STATUS
       send_command MUTE_STATUS
       send_command MASTER_VOLUME_STATUS
       send_command INPUT_SOURCE_STATUS
     end
     
-    def on
+    def on!
       send_command POWER_STATUS
       send_command POWER_ON unless state.on?
     end
     
-    def standby
+    def standby!
       send_command POWER_STATUS
       send_command POWER_STANDBY unless state.standby?
     end
     
-    def mute
+    def mute!
       send_command MUTE_STATUS
       send_command MUTE_ON unless state.mute?
     end
     
-    def unmute
+    def unmute!
       send_command MUTE_STATUS
       send_command MUTE_OFF if state.mute?
     end
