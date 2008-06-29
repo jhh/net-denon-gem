@@ -27,7 +27,7 @@ module Net; module Denon
     # receiver. Options include:
     #  port:: the port to connect to, defaults to DEFAULT_PORT.
     #  logger:: the logger to use
-    #  proxy:: a proxy class for TCPSocket, used for testing
+    #  proxy:: a proxy class for TCPSocket
     #  timeout:: amount of time to wait for connection, defaults to no timeout
     def initialize(host, options={})
       self.logger = options[:logger]
@@ -49,6 +49,7 @@ module Net; module Denon
 
     # Sends a command string to the receiver.
     def send(string)
+      info { "sending: #{string}" }
       string += "\r"
       length = string.length
       while 0 < length
@@ -66,6 +67,7 @@ module Net; module Denon
         buffer = socket.readpartial(1024)
         line += buffer
       end
+      info { "received: #{line}" }
       line
     end
       

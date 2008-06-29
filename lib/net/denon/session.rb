@@ -116,20 +116,60 @@ module Net ; module Denon
     
     def master_volume=(volume)
       v = volume.to_i
-      if (v > 0 && v < 99) then
-        send_command(MASTER_VOLUME_SET + v)
+      if ((0..99) === v) then
+        send_command(MASTER_VOLUME_SET + v.to_s)
+      else
+        raise ArgumentError.new("can't set volume to #{volume}")
+      end
+    end
+
+    def input_source(source)
+      case source
+      when :phono
+        send_command INPUT_SOURCE_PHONO
+      when :cd
+        send_command INPUT_SOURCE_CD
+      when :tuner
+        send_command INPUT_SOURCE_TUNER
+      when :dvd
+        send_command INPUT_SOURCE_DVD
+      when :hdp
+        send_command INPUT_SOURCE_HDP
+      when :tv_cbl
+        send_command INPUT_SOURCE_TV_CBL
+      when :sat
+        send_command INPUT_SOURCE_SAT
+      when :vcr
+        send_command INPUT_SOURCE_VCR
+      when :dvr
+        send_command INPUT_SOURCE_DVR
+      when :v_aux
+        send_command INPUT_SOURCE_V_AUX
+      when :net_usb
+        send_command INPUT_SOURCE_NET_USB
+      when :xm
+        send_command INPUT_SOURCE_XM
+      when :hdradio
+        send_command INPUT_SOURCE_HDRADIO
+      when :dab
+        send_command INPUT_SOURCE_DAB
+      when :ipod
+        send_command INPUT_SOURCE_IPOD
+      else
+        raise ArgumentError.new("input source not recognized: #{source}")
       end
     end
     
     def send_command(command)
       debug { "send_command called: #{command}" }
       transport.send command
-      check_status
+      sleep 0.1
+      update_state
     end
 
     protected
     
-    def check_status
+    def update_state
       debug { "check_status called" }
       state.update(transport.poll_events)
     end
