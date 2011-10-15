@@ -155,6 +155,12 @@ module Net ; module Denon
         send_command INPUT_SOURCE_DAB
       when :ipod
         send_command INPUT_SOURCE_IPOD
+      when :lastfm
+        send_command INPUT_SOURCE_LASTFM
+      when :napster
+        send_command INPUT_SOURCE_NAPSTER
+      when :server
+        send_command INPUT_SOURCE_SERVER
       else
         raise ArgumentError.new("input source not recognized: #{source}")
       end
